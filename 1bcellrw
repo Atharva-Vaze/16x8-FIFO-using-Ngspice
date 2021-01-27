@@ -1,0 +1,35 @@
+.include 180nm_bsim3.txt
+
+
+*minv1 phi phi1 vdd vdd P1 w=20u l=2u
+*minv2 phi phi1 0 0 N1 w=10u l=2u
+
+*.subckt precharge0 bit bit1
+ *mpre1 b1 phi vdd vdd P1 w=20u l=10u
+*mpre2 b phi vdd vdd P1 w=20u l=10u
+*.ends
+
+mpre1 b1 phi vdd vdd P1 w=20u l=10u
+mpre2 b phi vdd vdd P1 w=20u l=10u
+*x1 b b1 precharge0
+m5 b1 w q1 0 N1 w=6u l=10u
+m2 q1 q vdd vdd P1 w=40u l=10
+m1 q1 q 0 0 N1 w=20u l=10
+m4 q q1 vdd vdd P1 w=40u l=10u
+m3 q q1 0 0 N1 w=20u l=10u
+m6 b w q 0 N1 w=15u l=10u
+
+vd vdd 0 dc 1.8
+vphi phi 0 pulse(1.8 0 0 1ns 1ns 0.1 5)  
+vw w 0 pulse(0 1.8 0.5 1ns 1ns 2.5 5)
+*vb b 0 pulse(0 1.8 0 1ns 1ns 0.5 2.5)
+*vb1 b1 0 pulse (1.8 0 0 1ns 1ns 0.5 2.5)
+
+
+.control
+tran 0.1 10
+run
+
+plot v(phi) v(b)+2 v(b1)+2 v(w)+4 ylimit 0 6
+.endc
+.end
