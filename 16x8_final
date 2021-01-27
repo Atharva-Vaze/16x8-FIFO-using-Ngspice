@@ -1,0 +1,81 @@
+.include 180nm_bsim3.txt
+
+*.subckt precharge b b1 phy
+mpre1 col11 phi vdd vdd P1 w=20u l=10u
+mpre2 col1 phi vdd vdd P1 w=20u l=10u
+
+mpre3 col88 phi vdd vdd P1 w=20u l=10u
+mpre4 col8 phi vdd vdd P1 w=20u l=10u
+*.ends
+
+.subckt 1bcell b b1 w
+
+m5 b1 w q1 0 N1 w=6u l=10u
+m2 q1 q vdd vdd P1 w=40u l=10
+m1 q1 q 0 0 N1 w=20u l=10
+m4 q q1 vdd vdd P1 w=40u l=10u
+m3 q q1 0 0 N1 w=20u l=10u
+m6 b w q 0 N1 w=15u l=10u
+.ends
+
+
+ 
+*xy1 col1 col11 phi precharge
+*xx2 col2 col22 phi precharge
+*xx3 col3 col33 phi precharge
+*xx4 col4 col44 phi precharge
+*xx5 col5 col55 phi precharge
+*xx6 col6 col66 phi precharge
+*xx7 col7 col77 phi precharge
+*xy8 col8 col88 phi precharge
+
+
+
+
+*row subcircuit
+.subckt row  addr
+
+xcell1 addr col1 col11 1bcell
+xcell2 addr col2 col22 1bcell
+xcell3 addr col3 col33 1bcell
+xcell4 addr col4 col44 1bcell
+xcell5 addr col5 col55 1bcell
+xcell6 addr col6 col66 1bcell
+xcell7 addr col7 col77 1bcell
+xcell8 addr col8 col88 1bcell
+.ends
+
+x1 D1 row  	
+x2 D2 row 
+x3 addr3 row 
+x4 D4 row 
+x5 D5 row 
+x6 D6 row 
+x7 D7 row 
+x8 D8 row 
+x9 D9 row 
+x10 D10 row 
+x11 D11 row 
+x12 D12 row 
+x13 D13 row 
+x14 D14 row 
+x15 D15 row  
+x16 D16 row  
+
+vd vdd 0 dc 1.8
+vphi phi 0 pulse(1.8 0 0 1ns 1ns 0.1 5)  
+vaddr3 addr3 0 pulse(0 1.8 0.5 1ns 1ns 2.5 5)
+
+.control
+tran 0.1 10
+run
+
+plot  v(phi) v(b)+2 v(b1)+2 v(addr3)+4 ylimit 0 6
+.endc
+.end
+
+
+
+
+
+
