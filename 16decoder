@@ -1,0 +1,117 @@
+decoder sub ckt
+.include 180nm_bsim3.txt
+
+vdd 1 0 dc 5v
+va 2 0 pulse 0v 5v 1ns 1ns 1ns 5ns 20ns
+vb 3 0 pulse 0v 5v 1ns 1ns 1ns 10ns 20ns
+vc 8 0 pulse 0v 5v 1ns 1ns 1ns 10ns 20ns
+vd 9 0 pulse 0v 5v 1ns 1ns 1ns 10ns 20ns
+*Subckt definitions 
+*~A
+xnot 0 1 2 2 4 5 not
+*~B     
+xnot1 0 1 3 3 6 7 not
+*~C
+xnot2 0 1 8 8 10 11 not
+*~D     
+xnot3 0 1 9 9 12 13 not
+*~(ABCD)
+xnand 0 1 2 3 E 15 8 9 16 17 nand
+*~(ABC~D)
+xnand1 0 1 2 3 F 18 8 12 19 20 nand
+*~(AB~CD)
+xnand2 0 1 2 3 G 20 10 9 21 22 nand
+*~(AB~C~D)
+xnand3 0 1 2 3 H 23 10 12 24 25 nand
+*~(A~BCD)
+xnand4 0 1 2 6 I 26 8 9 26 27 nand
+*~(A~BC~D)
+xnand5 0 1 2 6 J 28 8 12 28 29 nand
+*~(A~B~CD)
+xnand6 0 1 2 6 K 30 10 9 31 32 nand
+*~(A~B~C~D)
+xnand7 0 1 2 6 L 33 10 12 34 35 nand
+*~(~ABCD)
+xnand8 0 1 4 3 M 36 8 9 37 38 nand
+*~(~ABC~D)
+xnand9 0 1 4 3 N 37 8 12 39 40 nand
+*~(~AB~CD)
+xnand10 0 1 4 3 O 41 10 9 42 43 nand
+*~(~AB~C~D)
+xnand11 0 1 4 3 P 44 10 12 45 46 nand
+*~(~A~BCD)
+xnand12 0 1 4 6 Q 47 8 9 48 49 nand
+*~(~A~BC~D)
+xnand13 0 1 4 6 R 50 8 12 51 52 nand
+*~(~A~B~CD)
+xnand14 0 1 4 6 S 53 10 9 54 55 nand
+*~(~A~B~C~D)
+xnand15 0 1 4 6 T 55 10 12 56 57 nand
+
+*(ABCD)
+xnot4 0 1 E E D1 58 not
+*~(ABC~D)
+xnot4 0 1 F F D2 58 not
+*~(AB~CD)
+xnot4 0 1 G G D3 58 not
+*~(AB~C~D)
+xnot4 0 1 H H D4 58 not
+*~(A~BCD)
+xnot4 0 1 I I D5 58 not
+*~(A~BC~D)
+xnot4 0 1 J J D6 58 not
+*~(A~B~CD)
+xnot4 0 1 K K D7 58 not
+*~(A~B~C~D)
+xnot4 0 1 L L D8 58 not
+*~(~ABCD)
+xnot4 0 1 M M D9 58 not
+*~(~ABC~D)
+xnot4 0 1 N N D10 58 not
+*~(~AB~CD)
+xnot4 0 1 O O D11 58 not
+*~(~AB~C~D)
+xnot4 0 1 P P D12 58 not
+*~(~A~BCD)
+xnot4 0 1 Q Q D13 58 not
+*~(~A~BC~D)
+xnot4 0 1 R R D14 58 not
+*~(~A~B~CD)
+xnot4 0 1 S S D15 58 not
+*~(~A~B~C~D)
+xnot4 0 1 T T D16 58 not
+
+* 4 input nand Gate
+.subckt nand 0 1 a b c d e f g h
+mn1 c a d 0 N1 w=20u l=1u
+mn2 d b g 0 N1 w=20u l=1u
+mn3 g e h 0 N1 w=20u l=1u
+mn4 h f 0 0 N1 w=20u l=1u
+mp1 c a 1 1 P1 w=40u l=1u
+mp2 c b 1 1 P1 w=40u l=1u
+mp3 c e 1 1 P1 w=40u l=1u
+mp4 c f 1 1 P1 w=40u l=1u
+.ends
+.model nmod nmos vto=1v kp=20u
+.model pmod pmos vto=-1v kp=20u
+
+
+
+* nand Gate
+.subckt not 0 1 2 3 4 5
+my1 4 2 5 0 N1 w=20u l=1u
+my2 5 3 0 0 N1 w=20u l=1u
+mz1 4 2 1 1 P1 w=40u l=1u
+mz2 4 3 1 1 P1 w=40u l=1u
+.ends
+
+.model nmod N1 vto=1v kp=20u
+.model pmod P1 vto=-1v kp=20u
+
+.tran 0.1ns 100ns
+.control
+run
+plot v(2) v(3)+5 v(8)+10 v(9)+15 v(T)+20 v(D16)+25  
+.endc
+.end
+
