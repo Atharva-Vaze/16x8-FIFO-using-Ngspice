@@ -1,0 +1,179 @@
+.include 180nm_bsim3.txt
+
+*Subckt definitions
+*~A
+xnot 0 1 2 2 4 5 not
+*~B     
+xnot1 0 1 3 3 6 7 not
+*~C
+xnot2 0 1 8 8 10 11 not
+*~addr     
+xnot3 0 1 9 9 12 13 not
+*~(ABCD)
+xnand 0 1 2 3 E 15 8 9 16 17 nand
+*~(ABC~addr)
+xnand1 0 1 2 3 F 18 8 12 19 20 nand
+*~(AB~CD)
+xnand2 0 1 2 3 G 20 10 9 21 22 nand
+*~(AB~C~D)
+xnand3 0 1 2 3 H 23 10 12 24 25 nand
+*~(A~BCD)
+xnand4 0 1 2 6 I 26 8 9 26 27 nand
+*~(A~BC~D)
+xnand5 0 1 2 6 J 28 8 12 28 29 nand
+*~(A~B~CD)
+xnand6 0 1 2 6 K 30 10 9 31 32 nand
+*~(A~B~C~D)
+xnand7 0 1 2 6 L 33 10 12 34 35 nand
+*~(~ABCD)
+xnand8 0 1 4 3 M 36 8 9 37 38 nand
+*~(~ABC~D)
+xnand9 0 1 4 3 N 37 8 12 39 40 nand
+*~(~AB~CD)
+xnand10 0 1 4 3 O 41 10 9 42 43 nand
+*~(~AB~C~D)
+xnand11 0 1 4 3 P 44 10 12 45 46 nand
+*~(~A~BCD)
+xnand12 0 1 4 6 Q 47 8 9 48 49 nand
+*~(~A~BC~D)
+xnand13 0 1 4 6 R 50 8 12 51 52 nand
+*~(~A~B~CD)
+xnand14 0 1 4 6 S 53 10 9 54 55 nand
+*~(~A~B~C~D)
+xnand15 0 1 4 6 T 55 10 12 56 57 nand
+
+*(ABCaddr)
+xnot4 0 1 E E addr1 58 not
+*~(ABC~addr)
+xnot4 0 1 F F addr2 58 not
+*~(AB~Caddr)
+xnot4 0 1 G G addr3 58 not
+*~(AB~C~addr)
+xnot4 0 1 H H addr4 58 not
+*~(A~BCaddr)
+xnot4 0 1 I I addr5 58 not
+*~(A~BC~addr)
+xnot4 0 1 J J addr6 58 not
+*~(A~B~Caddr)
+xnot4 0 1 K K addr7 58 not
+*~(A~B~C~addr)
+xnot4 0 1 L L addr8 58 not
+*~(~ABCaddr)
+xnot4 0 1 M M addr9 58 not
+*~(~ABC~addr)
+xnot4 0 1 N N addr10 58 not
+*~(~AB~Caddr)
+xnot4 0 1 O O addr11 58 not
+*~(~AB~C~addr)
+xnot4 0 1 P P addr12 58 not
+*~(~A~BCaddr)
+xnot4 0 1 Q Q addr13 58 not
+*~(~A~BC~addr)
+xnot4 0 1 R R addr14 58 not
+*~(~A~B~Caddr)
+xnot4 0 1 S S addr15 58 not
+*~(~A~B~C~addr)
+xnot4 0 1 T T addr16 58 not
+
+* 4 input nand Gate
+.subckt nand 0 1 a b c d e f g h
+mn1 c a d 0 N1 w=20u l=1u
+mn2 d b g 0 N1 w=20u l=1u
+mn3 g e h 0 N1 w=20u l=1u
+mn4 h f 0 0 N1 w=20u l=1u
+mp1 c a 1 1 P1 w=40u l=1u
+mp2 c b 1 1 P1 w=40u l=1u
+mp3 c e 1 1 P1 w=40u l=1u
+mp4 c f 1 1 P1 w=40u l=1u
+.ends
+.model nmod nmos vto=1v kp=20u
+.model pmod pmos vto=-1v kp=20u
+
+
+
+* nand Gate
+.subckt not 0 1 2 3 4 5
+my1 4 2 5 0 N1 w=20u l=1u
+my2 5 3 0 0 N1 w=20u l=1u
+mz1 4 2 1 1 P1 w=40u l=1u
+mz2 4 3 1 1 P1 w=40u l=1u
+.ends
+
+.model nmod N1 vto=1v kp=20u
+.model pmod P1 vto=-1v kp=20u
+
+m10 phi1 phi vdd vdd P1 w=20u l=2u
+m20 phi1 phi 0 0 N1 w=10u l=2u
+
+
+.subckt precharge0 tit tit1 phi1 vss
+mpre1 tit phi1 vss vss N1 w=10u l=2u 
+mpre2 tit1 phi1 vss vss N1 w=10u l=2u
+.ends
+
+.subckt precharge1 bit bit1 phi vdd  
+mpre3 bit phi vdd vdd P1 w=20u l=2u
+mpre4 bit1 phi vdd vdd P1 w=20u l=2u
+.ends
+
+.subckt 1bcell w b b1 vdd vss 
+m5 b1 w q1 vss N1 w=6u l=2u
+m2 q1 q vdd vdd P1 w=40u l=2u
+m1 q1 q vss vss N1 w=20u l=2u
+m4 q q1 vdd vdd P1 w=40u l=2u
+m3 q q1 vss vss N1 w=20u l=2u
+m6 b w q vss N1 w=15u l=2u
+.ends
+
+.subckt row addr
+x1 addr c1 c11 vdd vss 1bcell
+x2 addr c2 c22 vdd vss 1bcell
+x3 addr c3 c33 vdd vss 1bcell
+x4 addr c4 c44 vdd vss 1bcell
+x5 addr c5 c55 vdd vss 1bcell
+x6 addr c6 c66 vdd vss 1bcell
+x7 addr c7 c77 vdd vss 1bcell
+x8 addr c8 c88 vdd vss 1bcell
+.ends
+
+x11 c1 c11 phi vdd precharge1
+x22 c2 c22 phi1 vss precharge0
+x33 c3 c33 phi1 vss precharge0
+x44 c4 c44 phi1 vss precharge0
+x55 c5 c55 phi1 vss precharge0
+x66 c6 c66 phi1 vss precharge0
+x77 c7 c77 phi1 vss precharge0
+x88 c8 c88 phi vdd precharge1    
+
+x99 addr1 row
+x100 addr2 row
+x101 addr3 row
+x102 addr4 row
+x103 addr5 row
+x104 addr6 row
+x105 addr7 row
+x106 addr8 row
+x107 addr9 row
+x108 addr10 row
+x109 addr11 row
+x110 addr12 row
+x111 addr13 row
+x112 addr14 row
+x113 addr15 row
+x114 addr16 row
+
+vd vdd 0 dc 1.8
+vs vss 0 dc 0
+vp phi 0 pulse(1.8 0 0 1ns 1ns 0.1 5)
+va 2 0 dc 0
+vb 3 0 dc 0
+vc 8 0 pulse(0 1.8 0.5 1ns 1ns 2.5 5)
+vd 9 0 pulse(0 1.8 0.5 1ns 1ns 2.5 5)
+
+
+.control 
+tran 0.1 10
+run
+plot  v(phi1)+2 v(addr3)+4 v(c1)+6 v(c8)+8  ylimit 0 10
+.endc
+.end
